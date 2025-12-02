@@ -3,6 +3,35 @@
 session_start();
 include "../conn/dbconn.php";
 
+// PHPMailer - optional SMTP email notification (guarded include)
+$phpmailer_available = false;
+// Prefer Composer autoload if present
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+    $phpmailer_available = class_exists('PHPMailer\\PHPMailer\\PHPMailer');
+} elseif (file_exists(__DIR__ . '/phpmailer/src/Exception.php') && file_exists(__DIR__ . '/phpmailer/src/PHPMailer.php') && file_exists(__DIR__ . '/phpmailer/src/SMTP.php')) {
+    require_once __DIR__ . '/phpmailer/src/Exception.php';
+    require_once __DIR__ . '/phpmailer/src/PHPMailer.php';
+    require_once __DIR__ . '/phpmailer/src/SMTP.php';
+    $phpmailer_available = class_exists('PHPMailer\\PHPMailer\\PHPMailer');
+} else {
+    $phpmailer_available = false;
+    error_log('PHPMailer not found; email sending disabled.');
+}
+
+// SMTP configuration - update with your credentials
+$SMTP_ENABLED = true; // set to false to disable SMTP sending
+$SMTP_HOST = 'smtp.gmail.com';
+$SMTP_PORT = 465; // 587 (tls) or 465 (ssl)
+$SMTP_USERNAME = 'info.mail.senrith@gmail.com'; // replace
+$SMTP_PASSWORD = 'pidkyv5Vipbapodgyg'; // replace (app password)
+$SMTP_SECURE = 'ssl'; // 'tls' or 'ssl'
+
+$FROM_EMAIL = 'info.mail.senrith@gmail.com';
+$FROM_NAME = 'eBeyonds Website';
+$ADMIN_EMAIL = 'rihansenrith@gmail.com';
+
+
 // Set response header as JSON
 header('Content-Type: application/json');
 
@@ -58,8 +87,8 @@ if (empty($email)) {
 
 // Validate Telephone (optional but if provided, must be valid)
 if (!empty($telephone)) {
-    if (strlen($telephone) > 10) {
-        $errors['telephone'] = 'Telephone cannot exceed 50 characters';
+    if (strlen($telephone) != 10) {
+        $errors['telephone'] = 'Telephone only 10  characters';
     } elseif (!preg_match('/^[0-9\s\-\+\(\)]+$/', $telephone)) {
         $errors['telephone'] = 'Telephone can only contain numbers, spaces, hyphens, plus sign, and parentheses';
     }
@@ -134,14 +163,63 @@ $stmt->bind_param('sssssi', $firstName, $lastName, $email, $telephone, $message,
 // Execute query
 if ($stmt->execute()) {
     $messageId = $stmt->insert_id;
-    
-    // Success response
+
+    // Attempt to send admin notification via PHPMailer (only if available)
+    $mailSent = false;
+    $mailError = '';
+
+    if ($phpmailer_available) {
+        try {
+            $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+
+            if ($SMTP_ENABLED && !empty($SMTP_HOST)) {
+                $mail->isSMTP();
+                $mail->Host = $SMTP_HOST;
+                $mail->SMTPAuth = true;
+                $mail->Username = $SMTP_USERNAME;
+                $mail->Password = $SMTP_PASSWORD;
+                $mail->SMTPSecure = $SMTP_SECURE;
+                $mail->Port = $SMTP_PORT;
+            } else {
+                $mail->isMail();
+            }
+
+            $mail->setFrom($FROM_EMAIL, $FROM_NAME);
+            $mail->addAddress($ADMIN_EMAIL);
+            $mail->isHTML(true);
+            $mail->Subject = "New contact message from $firstName $lastName";
+
+            $body = "<div style=\"font-family:system-ui,Arial,sans-serif;color:#333;\">" .
+                "<h3>New contact message</h3>" .
+                "<p><strong>Name:</strong> {$firstName} {$lastName}</p>" .
+                "<p><strong>Email:</strong> {$email}</p>" .
+                "<p><strong>Telephone:</strong> " . (!empty($telephone) ? $telephone : 'N/A') . "</p>" .
+                "<p><strong>Message:</strong><br>" . nl2br($message) . "</p>" .
+                "<p style=\"font-size:12px;color:#666;\">Received: " . date('Y-m-d H:i:s') . "</p>" .
+                "</div>";
+
+            $mail->Body = $body;
+            $mail->send();
+            $mailSent = true;
+        } catch (\Exception $e) {
+            $mailError = (isset($mail) && !empty($mail->ErrorInfo)) ? $mail->ErrorInfo : $e->getMessage();
+            error_log('PHPMailer error: ' . $mailError);
+        }
+    } else {
+        $mailSent = false;
+        $mailError = 'PHPMailer not available on server';
+        error_log('PHPMailer not available - email skipped');
+    }
+
+    // Success response includes mail status
     echo json_encode([
         'success' => true,
-        'message' => 'Thank you! Your message has been sent successfully. We will get back to you soon.',
-        'messageId' => $messageId
+        'message' => 'Thank you! Your message has been saved.' . ($mailSent ? ' Notification email sent.' : ' Message saved, but failed to send notification email.'),
+        'messageId' => $messageId,
+        'mailSent' => $mailSent,
+        'mailError' => $mailError
     ]);
-    
+
     // Optional: Log the submission
     error_log("Contact form submitted - ID: $messageId, Email: $email, Date: " . date('Y-m-d H:i:s'));
 } else {
@@ -154,4 +232,3 @@ if ($stmt->execute()) {
 $stmt->close();
 $conn->close();
 ?>
-
