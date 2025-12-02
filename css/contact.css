@@ -1,0 +1,125 @@
+.contact-section {
+  background: #000;             
+  padding: 50px 0;
+  color: #fff;
+}
+
+.contact-inner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* Titles */
+.contact-title {
+  font-size: 1.3rem;
+  margin-bottom: 0.25rem;
+}
+
+.contact-subtitle {
+  font-size: 0.85rem;
+  color: #cfcfcf;
+  margin-bottom: 1.5rem;
+}
+
+/* Inputs */
+.contact-label {
+  font-size: 0.8rem;
+}
+
+.contact-input {
+  background: #333;
+  border: 1px solid #333;
+  color: #fff;
+  border-radius: 0;
+  font-size: 0.85rem;
+}
+
+.contact-input:focus {
+  background: #333;
+  border-color: #555;
+  color: #fff;
+  box-shadow: none;
+}
+
+/* Required text + terms */
+.contact-required {
+  font-size: 0.75rem;
+  color: #cfcfcf;
+  margin-bottom: 0.25rem;
+}
+
+.contact-check {
+  background-color: transparent;
+  border-color: #777;
+}
+
+.contact-check-label {
+  font-size: 0.8rem;
+  color: #cfcfcf;
+}
+
+.contact-link {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* Submit button */
+.contact-submit {
+  background: #d89a21 !important;     
+  border-radius: 0 !important;
+  border: none !important;
+  font-size: 0.8rem;
+  padding: 0.4rem 2.5rem !important;
+  letter-spacing: 0.08em;
+  color: #000 !important;
+  font-weight: 600;
+}
+
+.contact-submit:hover {
+  background: #c58512 !important;
+  color: #000 !important;
+}
+
+.contact-submit:focus {
+  background: #c58512 !important;
+  box-shadow: none !important;
+}
+
+/* Map */
+.map-wrapper {
+  width: 100%;
+  height: 65vh;
+  background: #111;
+}
+
+.map-wrapper iframe {
+  width: 100%;
+  height: 100%;
+}
+
+/* Tablet  */
+@media (max-width: 991.98px) {
+  .contact-inner {
+    max-width: 720px;
+  }
+
+  .map-wrapper {
+    height: 280px;
+    margin-top: 10px;
+  }
+}
+
+/* Mobile  */
+@media (max-width: 575.98px) {
+  .contact-inner {
+    max-width: 420px;
+  }
+
+  .contact-title {
+    font-size: 1.2rem;
+  }
+
+  .map-wrapper {
+    height: 260px;
+  }
+}
