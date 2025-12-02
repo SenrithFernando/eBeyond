@@ -40,5 +40,7 @@
 
     <!-- Custom JavaScript -->
     <script src="./js/search.js"></script>
+    <script src="./js/contact-form.js"></script>
+    
 </body>
 </html>

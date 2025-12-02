@@ -7,43 +7,44 @@
         <h2 class="contact-title">How to reach us</h2>
         <p class="contact-subtitle">Lorem ipsum dolor sit amet, consectetur.</p>
 
-        <form>
+        <form id="contactForm" method="post" action="php/contact-form.php" class="contact-form mt-4">
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label contact-label">First Name*</label>
-              <input type="text" class="form-control contact-input" required>
+              <input type="text" name="first_name" class="form-control contact-input" required>
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label contact-label">Last Name*</label>
-              <input type="text" class="form-control contact-input" required>
+              <input type="text" name="last_name" class="form-control contact-input" required>
             </div>
           </div>
 
           <div class="mb-3">
             <label class="form-label contact-label">Email*</label>
-            <input type="email" class="form-control contact-input" required>
+            <input type="email" name="email" class="form-control contact-input" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label contact-label">Telephone</label>
-            <input type="tel" class="form-control contact-input">
+            <input type="tel" name="telephone" class="form-control contact-input">
           </div>
 
           <div class="mb-2">
             <label class="form-label contact-label">Message</label>
-            <textarea class="form-control contact-input" rows="3"></textarea>
+            <textarea name="message" class="form-control contact-input" rows="3" required></textarea>
           </div>
 
           <p class="contact-required">*Required fields</p>
 
           <div class="form-check mb-3">
-            <input class="form-check-input contact-check" type="checkbox" id="termsCheck">
+            <input class="form-check-input contact-check" type="checkbox" name="agreed_terms" id="termsCheck" required>
             <label class="form-check-label contact-check-label" for="termsCheck">
               I agree to the <a href="#" class="contact-link">Terms &amp; Conditions</a>
             </label>
           </div>
 
           <button type="submit" class="btn contact-submit">SUBMIT</button>
+          <div id="formMessage" class="mt-3" style="display: none;"></div>
         </form>
       </div>
 

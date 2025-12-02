@@ -51,11 +51,25 @@
 .contact-check {
   background-color: transparent;
   border-color: #777;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.contact-check:checked {
+  background-color: #d89a21 !important;
+  border-color: #d89a21 !important;
+}
+
+.contact-check.is-invalid {
+  border-color: #ff6b6b !important;
+  box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25);
 }
 
 .contact-check-label {
   font-size: 0.8rem;
   color: #cfcfcf;
+  cursor: pointer;
+  user-select: none;
 }
 
 .contact-link {
