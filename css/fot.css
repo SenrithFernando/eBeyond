@@ -1,0 +1,116 @@
+/* FOOTER CONTAINER */
+.site-footer {
+  background: #111;
+  padding: 50px 0 30px;
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.footer-inner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* TOP */
+.footer-title {
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.footer-text {
+  color: #ccc;
+  margin: 0;
+  line-height: 1.4rem;
+}
+
+/* FOLLOW US */
+.footer-follow {
+  margin-bottom: 6px;
+  color: #ccc;
+  font-size: 0.85rem;
+}
+
+.footer-icons a {
+  color: #fff;
+  margin-left: 10px;
+  font-size: 1.2rem;
+}
+
+.footer-icons a:hover {
+  color: #d89a21;
+}
+
+/* DIVIDER */
+.footer-divider {
+  border-bottom: 1px solid #333;
+  margin: 20px 0;
+}
+
+/* BOTTOM */
+.footer-copy,
+.footer-credit {
+  margin: 0;
+  color: #ccc;
+  font-size: 0.8rem;
+}
+
+.footer-credit a {
+  color: #ccc;
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
+/* remove global text-center from footer-bottom if you had it */
+.footer-copy,
+.footer-credit {
+  margin: 0;
+}
+
+/* Mobile tweaks (stack + center) */
+@media (max-width: 575.98px) {
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 4px;
+  }
+}
+
+
+/* ---------- RESPONSIVE ---------- */
+
+/* Tablet layout */
+@media (max-width: 991.98px) {
+  .footer-inner {
+    max-width: 720px;
+  }
+}
+
+/* Mobile layout */
+@media (max-width: 575.98px) {
+  .footer-inner {
+    max-width: 420px;
+  }
+
+  .footer-left {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  
+  .footer-right {
+    text-align: center !important;
+    margin-top: 20px;
+  }
+
+  .footer-icons a {
+    margin: 0 10px;
+  }
+
+  .footer-copy,
+  .footer-credit {
+    font-size: 0.75rem;
+  }
+}
