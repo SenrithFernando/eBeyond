@@ -1,0 +1,97 @@
+ body {
+      margin: 0;
+      background: #222;
+    }
+
+    /* Top bar */
+    .top-navbar {
+      background-color: #111;
+      padding: 0.6rem 3rem;
+    }
+
+    /* Logo “icon” */
+    .logo-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 3px solid #d79c2c;
+      position: relative;
+      margin-right: 0.4rem;
+    }
+
+    .brand-text {
+      color: #fff;
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    /* Menu links */
+    .main-nav .nav-link {
+      color: #fff;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      padding: 0;
+    }
+
+    .main-nav .nav-link + .nav-link {
+      margin-left: 2rem;
+    }
+
+    .main-nav .nav-link:hover,
+    .main-nav .nav-link:focus {
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 0.25rem;
+    }
+
+    .main-nav .nav-link.active {
+      text-decoration: underline;
+      text-underline-offset: 0.25rem;
+    }
+
+    /* Toggle bttn */
+    .menu-btn {
+      width: 26px;
+      height: 18px;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .menu-btn span {
+      display: block;
+      height: 2px;
+      width: 100%;
+      background: #fff;
+    }
+
+    /* RESPONSE  */
+
+    /* Tablet*/
+    @media (max-width: 991.98px) {
+      .top-navbar {
+        padding: 0.6rem 1.5rem;
+      }
+
+      .main-nav .nav-link {
+        font-size: 0.8rem;
+      }
+
+      .main-nav .nav-link + .nav-link {
+        margin-left: 1.4rem;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 575.98px) {
+      .top-navbar {
+        padding: 0.5rem 1rem;
+      }
+
+      .main-nav {
+        display: none !important;
+      }
+    }
