@@ -52,7 +52,7 @@ $telephone = isset($_POST['telephone']) ? trim($_POST['telephone']) : '';
 $message = isset($_POST['message']) ? trim($_POST['message']) : '';
 $agreedTerms = isset($_POST['agreed_terms']) ? 1 : 0;
 
-// ===== BACKEND VALIDATION =====
+//  BACKEND VALIDATION 
 
 // Validate First Name
 if (empty($firstName)) {
@@ -85,7 +85,7 @@ if (empty($email)) {
     $errors['email'] = 'Email cannot exceed 150 characters';
 }
 
-// Validate Telephone (optional but if provided, must be valid)
+// Validate Telephone 
 if (!empty($telephone)) {
     if (strlen($telephone) != 10) {
         $errors['telephone'] = 'Telephone only 10  characters';
@@ -126,7 +126,7 @@ $email = strtolower(htmlspecialchars($email, ENT_QUOTES, 'UTF-8'));
 $telephone = htmlspecialchars($telephone, ENT_QUOTES, 'UTF-8');
 $message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
 
-// Check for duplicate submission (same email within last 5 minutes)
+// Check for duplicate submission 
 $checkDuplicateStmt = $conn->prepare("SELECT id FROM contact_messages WHERE email = ? AND created_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)");
 
 if (!$checkDuplicateStmt) {
