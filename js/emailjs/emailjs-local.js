@@ -8,7 +8,7 @@ window.emailjs = window.emailjs || {};
 
 (function() {
     let initialized = false;
-    let publicKey = 'ydL5BIdCscYu9cchS';
+    let publicKey = '';
 
     emailjs.init = function(key) {
         publicKey = key;
@@ -24,8 +24,8 @@ window.emailjs = window.emailjs || {};
 
             // Map EmailJS params to backend form field names
             const fieldMapping = {
-                'from_name': 'first_name',  // kept for backward-compatibility
-                'user_name': 'first_name',  // will be split into first/last below
+                'from_name': 'first_name',  
+                'user_name': 'first_name',  
                 'from_email': 'email',
                 'user_email': 'email',
                 'phone': 'telephone',
@@ -43,7 +43,7 @@ window.emailjs = window.emailjs || {};
                 }
             }
 
-            // Split name (try 'user_name' then 'from_name') into first_name and last_name
+            // Split name into first_name and last_name
             const fromName = params.user_name || params.from_name || '';
             const nameParts = fromName.trim() ? fromName.trim().split(/\s+/) : [];
             if (nameParts.length >= 2) {
@@ -54,12 +54,12 @@ window.emailjs = window.emailjs || {};
                 formData.set('last_name', '');
             }
 
-            // Add agreed_terms checkbox (required by backend)
+            // Add agreed_terms checkbox 
             formData.set('agreed_terms', '1');
 
             console.log('Sending form data to backend:', Object.fromEntries(formData));
 
-            // Send to backend email handler (absolute path from root)
+            // Send to backend email handler 
             fetch('/eBeyonds/php/insertContact.php', {
                 method: 'POST',
                 body: formData

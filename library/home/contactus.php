@@ -62,44 +62,8 @@
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade">
           </iframe>
-
-          <!-- fallback: OpenStreetMap embed (hidden by default) -->
-          <div id="eb-map-fallback" style="display:none;">
-            <iframe
-              src="https://www.openstreetmap.org/export/embed.html?query=eBEYONDS&layer=mapnik"
-              style="border:0; width:100%; height:400px; min-height:300px;"
-              loading="lazy"></iframe>
-            <div style="font-size:13px; color:#666; margin-top:8px;">
-              Map provided by OpenStreetMap — <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a>
-            </div>
-          </div>
         </div>
 
-        <script>
-          // Detect if Google Maps (maps.googleapis.com) was blocked by an extension
-          // If blocked, show the OpenStreetMap fallback embed so users still see a map.
-          (function(){
-            // Wait a short time for scripts to load; if window.google.maps is undefined, assume blocked.
-            function showFallback() {
-              var iframe = document.getElementById('eb-map-iframe');
-              var fallback = document.getElementById('eb-map-fallback');
-              if (iframe && fallback) {
-                iframe.style.display = 'none';
-                fallback.style.display = 'block';
-                console.warn('Google Maps appears blocked — showing OpenStreetMap fallback.');
-              }
-            }
-
-            // Check for google.maps after 1.5s; if not present, fallback
-            setTimeout(function(){
-              if (typeof window.google === 'undefined' || typeof window.google.maps === 'undefined') {
-                showFallback();
-              }
-            }, 1500);
-
-            // Also hide fallback if user explicitly requests original (future extension)
-          })();
-        </script>
       </div>
 
     </div>
