@@ -1,12 +1,18 @@
-
 // Only create wrapper if real EmailJS is not already loaded
 // Real EmailJS has sendForm method or send function doesn't include our wrapper code
-const isRealEmailJS = window.emailjs && 
-                     window.emailjs.send && 
-                     (!window.emailjs.send.toString().includes('insertContact.php') || 
-                      window.emailjs.sendForm);
+(function() {
+    'use strict';
+    
+    const isRealEmailJS = window.emailjs && 
+                         window.emailjs.send && 
+                         (!window.emailjs.send.toString().includes('insertContact.php') || 
+                          window.emailjs.sendForm);
 
-if (!isRealEmailJS) {
+    if (isRealEmailJS) {
+        // Real EmailJS is already loaded, don't create wrapper
+        console.log('Real EmailJS already loaded, skipping local wrapper');
+        return;
+    }
     // Real EmailJS not loaded, create wrapper
     window.emailjs = window.emailjs || {};
 
@@ -39,29 +45,41 @@ if (!isRealEmailJS) {
             // Prepare form data to send to database
             const formData = new FormData();
             
-            // Map params to backend field names
-            for (let key in params) {
-                if (params.hasOwnProperty(key)) {
-                    let backendKey = fieldMapping[key] || key;
-                    formData.append(backendKey, params[key]);
+            // If first_name and last_name are already in params, use them directly
+            if (params.first_name && params.last_name) {
+                formData.append('first_name', params.first_name);
+                formData.append('last_name', params.last_name);
+            } else {
+                // Otherwise, try to split from full name
+                const fromName = params.user_name || params.from_name || params.name || '';
+                const nameParts = fromName.trim() ? fromName.trim().split(/\s+/) : [];
+                if (nameParts.length >= 2) {
+                    formData.append('first_name', nameParts[0]);
+                    formData.append('last_name', nameParts.slice(1).join(' '));
+                } else if (nameParts.length === 1) {
+                    formData.append('first_name', nameParts[0]);
+                    formData.append('last_name', '');
+                } else if (params.first_name) {
+                    formData.append('first_name', params.first_name);
+                    formData.append('last_name', params.last_name || '');
                 }
             }
-
-            // Split name into first_name and last_name
-            const fromName = params.user_name || params.from_name || '';
-            const nameParts = fromName.trim() ? fromName.trim().split(/\s+/) : [];
-            if (nameParts.length >= 2) {
-                formData.set('first_name', nameParts[0]);
-                formData.set('last_name', nameParts.slice(1).join(' '));
-            } else if (nameParts.length === 1) {
-                formData.set('first_name', nameParts[0]);
-                formData.set('last_name', '');
-            }
+            
+            // Map other params to backend field names
+            const emailValue = params.user_email || params.from_email || params.email || '';
+            const phoneValue = params.phone || params.telephone || '';
+            const messageValue = params.message || '';
+            
+            if (emailValue) formData.append('email', emailValue);
+            if (phoneValue) formData.append('telephone', phoneValue);
+            if (messageValue) formData.append('message', messageValue);
 
             // Add agreed_terms checkbox 
             formData.set('agreed_terms', '1');
 
             console.log('Sending to EmailJS REST API and database...');
+            console.log('EmailJS params:', params);
+            console.log('EmailJS config:', { serviceId, templateId, publicKey: publicKey.substring(0, 5) + '...' });
 
             // Send to BOTH EmailJS REST API and Database in parallel
             const emailjsPromise = fetch('https://api.emailjs.com/api/v1.0/email/send', {
@@ -76,19 +94,36 @@ if (!isRealEmailJS) {
                     template_params: params
                 })
             })
-            .then(response => {
+            .then(async response => {
                 if (response.ok) {
-                    return response.json().then(data => ({
+                    // EmailJS API returns "OK" as plain text on success, or JSON in some cases
+                    const contentType = response.headers.get('content-type');
+                    let data;
+                    try {
+                        if (contentType && contentType.includes('application/json')) {
+                            data = await response.json();
+                        } else {
+                            const text = await response.text();
+                            // If response is "OK" or empty, consider it success
+                            data = text === 'OK' || text === '' ? { status: 'OK' } : JSON.parse(text);
+                        }
+                    } catch (e) {
+                        // If parsing fails but status is OK, it's still success
+                        const text = await response.text();
+                        data = { status: text === 'OK' ? 'OK' : 'success', response: text };
+                    }
+                    return {
                         status: 200,
                         text: 'Email sent successfully via EmailJS',
                         emailjsData: data
-                    }));
+                    };
                 } else {
-                    return response.text().then(text => ({
+                    const errorText = await response.text();
+                    return {
                         status: response.status,
-                        text: 'EmailJS API error: ' + text,
+                        text: 'EmailJS API error: ' + errorText,
                         error: true
-                    }));
+                    };
                 }
             })
             .catch(error => {
@@ -177,7 +212,4 @@ if (!isRealEmailJS) {
     // Mark as loaded globally
     window.emailjs.__initialized = false;
 })();
-} else {
-    // Real EmailJS is already loaded, don't create wrapper
-    console.log('Real EmailJS already loaded, skipping local wrapper');
-}
+})();

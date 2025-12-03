@@ -121,12 +121,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const message = contactForm.querySelector('[name="message"]').value.trim();
 
         // Prepare EmailJS parameters (match EmailJS template variables)
+        // Include multiple variable name formats for compatibility
+        const fullName = firstName + ' ' + lastName;
         const emailParams = {
-            user_name: firstName + ' ' + lastName,
+            // Common variable names
+            user_name: fullName,
             user_email: email,
             message: message,
             phone: telephone || 'N/A',
-            to_email: EMAILJS_CONFIG.TO_EMAIL
+            telephone: telephone || 'N/A',
+            // Alternative variable names
+            from_name: fullName,
+            from_email: email,
+            name: fullName,
+            email: email,
+            // Additional fields
+            first_name: firstName,
+            last_name: lastName,
+            to_email: EMAILJS_CONFIG.TO_EMAIL,
+            // Subject line (if template uses it)
+            subject: `New contact form submission from ${fullName}`
         };
 
         // Prepare form data for database
